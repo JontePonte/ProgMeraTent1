@@ -155,10 +155,10 @@ def plot_3c(dataframe, year):
     print( "===================================================================================")
     print(f"  Country                       Health Expectancy {year}     Rank {year}")
 
-    for _, row in dataframe.iterrows():
-        _string_country = row['Country']
-        _string_health = f"{row[f'Health_Expectancy_{year}']:.3f}"
-        _string_rank = f"{row[f'Rank_{year}']:.3f}"
+    for _, _row in dataframe.iterrows():
+        _string_country = _row['Country']
+        _string_health = f"{_row[f'Health_Expectancy_{year}']:.3f}"
+        _string_rank = f"{_row[f'Rank_{year}']:.3f}"
 
         # Add some padding to make the table line up
         _padding_country = max(30 - len(_string_country), 0)
@@ -207,4 +207,3 @@ for index, row in df_2016_10.iterrows():
     ax.annotate(row['Country'], (row['Health_Expectancy_2016'], row['Rank_2016']))
 
 plt.show()
-
