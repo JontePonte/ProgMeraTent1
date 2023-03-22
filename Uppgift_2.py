@@ -4,12 +4,12 @@
 
 class Dator:
     'Basklass för datorer'
-    def __init__(self, tillverkare='', modell='', processortyp='', installerad_ram='', pris=0):
+    def __init__(self, tillverkare='', modell='', processortyp='', installerad_ram=0, pris=0):
         # Call methods for car properties
         self.set_tillverkare(tillverkare)
         self.set_modell(modell)
         self.set_processortyp(processortyp)
-        self.set_installerad_ram(installerad_ram)
+        self.set_installerad_ram = installerad_ram
         self.set_pris = pris
 
     def tillverkare(self):
@@ -24,6 +24,7 @@ class Dator:
         'Returnerar datorns processortyp'
         return self.__processortyp
 
+    @property
     def installerad_ram(self):
         'Returnerar datorns installerade RAM-minne'
         return self.__installerad_ram
@@ -46,8 +47,10 @@ class Dator:
         'Sätt datorns processortyp'
         self.__processortyp = processortyp
 
+    @installerad_ram.setter
     def set_installerad_ram(self, installerad_ram):
         'Sätt datorns installerade RAM-minne'
+        assert installerad_ram >= 0, ('Negativs RAM', installerad_ram)
         self.__installerad_ram = installerad_ram
 
     @pris.setter
@@ -73,7 +76,7 @@ def visa_data():
         til = dator.tillverkare()
         mod = dator.modell()
         pro = dator.processortyp()
-        ram = str(dator.installerad_ram())
+        ram = str(dator.installerad_ram)
         pri = str(dator.pris)
 
         # Padding för att få information att matcha rubriker
@@ -95,6 +98,7 @@ def lista():
     """ function för att lagra data om datorer """
     global datorer
 
+    print("")
     # Ta input om hur många datorer som ska hanteras
     while True:
         try:
@@ -137,7 +141,7 @@ def lista():
         dator = Dator(tillverkare=tillverkare,
                       modell=modell,
                       processortyp=processortyp,
-                      installerad_ram=str(installerad_ram),
+                      installerad_ram=installerad_ram,
                       pris=pris)
 
         # Lägg till datorn bland datorerna
@@ -148,3 +152,42 @@ def lista():
 
 # Denna kör hela a-uppgiften
 lista()
+
+# ----------------------------------------- Uppgift b) --------------------------------------------
+
+class Laptop(Dator):
+    'Underklass för laptops'
+    def __init__(self, tillverkare='', modell='', processortyp='', installerad_ram=0, pris=0, skarmstorlek=0):
+        super().__init__(tillverkare='', modell='', processortyp='', installerad_ram=0, pris=0)
+        self.set_skarmstorlek = skarmstorlek
+
+    @property
+    def skarmstorlek(self):
+        'Returnerar laptopens skärmstorlek'
+        return self.__skarmstorlek
+
+    @skarmstorlek.setter
+    def set_skarmstorlek(self, skarmstorlek):
+        'Sätt laptopens skärmstorlek'
+        assert skarmstorlek >= 0, ('Negativs RAM', skarmstorlek)
+        self.__skarmstorlek = skarmstorlek
+
+
+# --------------------------------------- Huvudprogram --------------------------------------------
+
+# Jag ändrade datatypen på din input på några ställen, annars likadant
+laptop1 = Laptop('ASUS', 'ExpertBook', 'Core i5', 16, 7990, 15.6)
+
+# Print enligt uppgiften
+print(f"Tillverkare: {laptop1.tillverkare()}")
+print(f"Modell: {laptop1.modell()}")
+print(f"Processortyp: {laptop1.processortyp()}")
+print(f"Installerad RAM: {laptop1.installerad_ram} GB")
+print(f"Pris: {laptop1.pris} kr")
+print(f"Skärmstorlek: {laptop1.skarmstorlek} tum")
+
+
+###################################################################################################
+# Jag skippar c & d. Ungarnar är magsjuka, jag har jobb imorgon och är rätt trött
+# Tror jag skrapat ihop tillräckligt med poäng total. Tack för en bra kurs
+##################################################################################################
