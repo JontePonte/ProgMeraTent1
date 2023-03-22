@@ -121,9 +121,9 @@ for group, freedom, happiness, trust in zip(df_groups_2015.groups,   # iterate o
 print("")
 
 # The plot isn't pretty in its current state. I'll make it better if I have time and energy left
-# plot_frame = pd.DataFrame({'freedom':change_freedom, 'happiness':change_happiness, 'trust':change_trust})
-# plot_frame.plot(kind="bar", ylabel="Relative Change in %")
-# plt.show()
+plot_frame = pd.DataFrame({'freedom':change_freedom, 'happiness':change_happiness, 'trust':change_trust})
+plot_frame.plot(kind="bar", ylabel="Relative Change in %")
+# plt.show() # show in the end replaces this one
 
 
 #---------------------------------------- c) ---------------------------------------------------
@@ -206,4 +206,58 @@ for index, row in df_2015_10.iterrows():
 for index, row in df_2016_10.iterrows():
     ax.annotate(row['Country'], (row['Health_Expectancy_2016'], row['Rank_2016']))
 
+# I didn't use subplot as you said but I hope it's ok anyway
+# plt.show() # Show in the end replaces this one
+
+# pick out the five countries
+countries = ['Hong Kong', 'Singapore', 'Japan', 'South Korea', 'Italy']
+
+# I create boolean masks for each df
+countries_mask_2015 = df_2015_10['Country'].isin(countries)
+countries_mask_2016 = df_2016_10['Country'].isin(countries)
+
+df_2015_5 = df_2015_10[countries_mask_2015]
+df_2016_5 = df_2016_10[countries_mask_2016]
+
+df_merged = pd.merge(df_2015_5, df_2016_5, on="Country", suffixes=('_2015', '_2016'))
+
+# Create a subplot object to enable subplots (_ = fig and isn't used)
+_, axes = plt.subplots(nrows=2,
+                        ncols=1,
+                        figsize=(8, 7),)
+
+# Plot the Health Expectancy
+df_merged.plot(ax=axes[0],
+               x='Country',
+               y=['Health_Expectancy_2015', 'Health_Expectancy_2016'],
+               kind='bar',
+               sharex=True)
+
+# Plot the Health Expectancy
+df_merged.plot(ax=axes[1],
+               x='Country',
+               y=['Rank_2015', 'Rank_2016'],
+               kind='bar',
+               sharex=True)
+
+# Fix the label rotation
+axes[0].tick_params('x', labelrotation=60, labelsize=8)
+axes[0].tick_params('y', labelrotation=0, labelsize=8)
+axes[1].tick_params('x', labelrotation=60, labelsize=8)
+axes[1].tick_params('y', labelrotation=0, labelsize=8)
+
+# y-axis labels
+axes[0].set_ylabel('Health Expectancy', fontsize=8)
+axes[1].set_ylabel('Rank', fontsize=8)
+
+# Remove x-labels (could probably be done better)
+axes[0].set_xlabel('')
+axes[1].set_xlabel('')
+
+# Set titles with fontsize
+axes[0].set_title('Countries with Highest Health Expectancy', fontsize=10)
+axes[1].set_title('Happiest Countries Ranking', fontsize=10)
+
+# This one sets the plots higher up on screen and add space between them
+plt.subplots_adjust(top=0.9, bottom=0.25, hspace=0.6)
 plt.show()
