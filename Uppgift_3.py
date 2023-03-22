@@ -2,7 +2,7 @@
 
 
 import pandas as pd
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 #---------------------------------------- a) ---------------------------------------------------
@@ -119,4 +119,92 @@ for group, freedom, happiness, trust in zip(df_groups_2015.groups,   # iterate o
         string_happiness + " "*padding_happiness +\
         string_trust)
 print("")
+
+# The plot isn't pretty in its current state. I'll make it better if I have time and energy left
+# plot_frame = pd.DataFrame({'freedom':change_freedom, 'happiness':change_happiness, 'trust':change_trust})
+# plot_frame.plot(kind="bar", ylabel="Relative Change in %")
+# plt.show()
+
+
+#---------------------------------------- c) ---------------------------------------------------
+
+df_2015 =  df_world_happiness_2015[['Country', 'Health (Life Expectancy)', 'Happiness Rank']].copy()
+df_2016 =  df_world_happiness_2016[['Country', 'Health (Life Expectancy)', 'Happiness Rank']].copy()
+
+# Renaming of columns
+df_2015 = df_2015.rename(
+    columns={
+    'Health (Life Expectancy)':'Health_Expectancy_2015',
+    'Happiness Rank':'Rank_2015'})
+df_2016 = df_2016.rename(
+    columns={
+    'Health (Life Expectancy)':'Health_Expectancy_2016',
+    'Happiness Rank':'Rank_2016'})
+
+# Sort the data based on Health_Expectancy
+df_2015 = df_2015.sort_values(by='Health_Expectancy_2015', ascending=False)
+df_2016 = df_2016.sort_values(by='Health_Expectancy_2016', ascending=False)
+
+df_2015_10 = df_2015.head(10)
+df_2016_10 = df_2016.head(10)
+
+def plot_3c(dataframe, year):
+    """ Plot the tables for 3c for both 2015 and 2016 """
+    print( "===================================================================================")
+    print(f"      Top 10 high life expectancy countries for the year {year}")
+    print( "===================================================================================")
+    print(f"  Country                       Health Expectancy {year}     Rank {year}")
+
+    for _, row in dataframe.iterrows():
+        _string_country = row['Country']
+        _string_health = f"{row[f'Health_Expectancy_{year}']:.3f}"
+        _string_rank = f"{row[f'Rank_{year}']:.3f}"
+
+        # Add some padding to make the table line up
+        _padding_country = max(30 - len(_string_country), 0)
+        _padding_health = max(27 - len(_string_health), 0)
+
+
+        # Print all data and padding to table
+        print(\
+            " "*2 +\
+            _string_country + " "*_padding_country +\
+            _string_health + " "*_padding_health +\
+            _string_rank)
+    print("")
+
+# Call the print table function
+plot_3c(df_2015_10, 2015)
+plot_3c(df_2016_10, 2016)
+
+# Create the scatter plot and add 2015 values
+ax = df_2015_10.plot.scatter(x='Health_Expectancy_2015',
+                             y='Rank_2015',
+                             color='blue',
+                             label='2015',
+                             figsize=(10,8),
+                             )
+
+# Add 2016 values to the same scatter plot
+df_2016_10.plot.scatter(ax=ax,
+                        x='Health_Expectancy_2016',
+                        y='Rank_2016',
+                        color='red',
+                        label=2016)
+
+# Title and labels
+title_text = 'Top 10 countries for the year 2015 and 2016 by Health Expectancy and their corresponding rank'
+
+ax.set_title(title_text)
+ax.set_xlabel('Health Expectancy')
+ax.set_ylabel('Rank')
+
+# Add names to the dots
+for index, row in df_2015_10.iterrows():
+    ax.annotate(row['Country'], (row['Health_Expectancy_2015'], row['Rank_2015']))
+
+for index, row in df_2016_10.iterrows():
+    ax.annotate(row['Country'], (row['Health_Expectancy_2016'], row['Rank_2016']))
+
+plt.show()
 
